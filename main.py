@@ -24,7 +24,8 @@ def add_card(player):
     player['cards'].append(new_card)
     player['score'] += new_card
     if (player['score'] > 21) and (11 in player['cards']):
-        player['cards'][player['cards'].index(11)] = 1
+        player['cards'].remove(11)
+        player['cards'].append(1)
     print(f"\n{player['name']} drew {new_card} from the deck.")
     print(f"{player['name'].title()} cards: {player['cards']}, current score: {player['score']}")
 
