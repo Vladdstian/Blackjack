@@ -23,6 +23,8 @@ def add_card(player):
     new_card = random.choice(cards)
     player['cards'].append(new_card)
     player['score'] += new_card
+    if (player['score'] > 21) and (11 in player['cards']):
+        player['cards'][player['cards'].index(11)] = 1
     print(f"\n{player['name']} drew {new_card} from the deck.")
     print(f"{player['name'].title()} cards: {player['cards']}, current score: {player['score']}")
 
