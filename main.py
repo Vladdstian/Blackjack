@@ -6,71 +6,76 @@ import art
 cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 
 
-def player_start():
+def create_player(name):
     player = {
-        "cards": [],
-        "score": 0
+        'name': name,
+        'cards': [],
+        'score': 0
     }
     for _ in range(2):
         card = random.choice(cards)
         player["cards"].append(card)
-        player["score"] += card
+        player['score'] += card
     return player
 
 
-def add_new_card(player):
-    card = random.choice(cards)
-    player["cards"].append(card)
-    player["score"] += card
+def add_card(player):
+    new_card = random.choice(cards)
+    player['cards'].append(new_card)
+    player['score'] += new_card
+    print(f"\n{player['name']} drew {new_card} from the deck.")
+    print(f"{player['name'].title()} cards: {player['cards']}, current score: {player['score']}")
 
 
-def check_score(player):
-    if player['score'] > 21:
-        print("Bust!")
+def blackjack(player_1, player_2):
+    if player_1['score'] == player_2['score'] == 21:
+        print("BLACKJACK! Draw! What are the chances? ")
         return True
-    elif player['score'] == 21:
-        print("Blackjack!")
+    elif player_1['score'] == 21:
+        print(f"BLACKJACK! {player_1['name'].title()} wins!")
+        return True
+    elif player_2['score'] == 21:
+        print(f"BLACKJACK! {player_2['name'].title()} wins!")
         return True
     else:
         return False
 
 
-def check_winner(p1, p2):
-    if p2['score'] < p1['score'] <= 21:
-        print(f"Player wins!")
-    else:
-        print(f"Computer wins!")
+def final_cards(player_1, player_2):
+    print(f"Your final hand: {player_1['cards']}, final score: {player_1['score']}")
+    print(f"Computer's final hand: {player_2['cards']}, final score: {player_2['score']}")
 
 
-# Game start
-game_is_on = True
-while game_is_on:
-    game_start = input("Do you want to play a game of Blackjack? Type 'y' or 'n': \n")
-    if game_start == 'y':
-        # Game Start
+while True:
+    choice = input("Do you want to play a game of Blackjack? Type 'y' or 'n': ")
+    if choice == 'y':
         print(art.logo)
-        player = player_start()
-        computer = player_start()
-        player['score'] = 21
-        # TODO - check for score/ Blackjack
+        player = create_player("Player")
+        computer = create_player("Computer")
         print(f"Your cards: {player['cards']}, current score: {player['score']}")
         print(f"Computer's first card: {computer['cards'][0]}")
-        if check_score(player) or check_score(computer):
-            print()
-            continue
-        else:
-            # Player draws more cards
-            choice = 'y'
-            while choice == 'y':
-                choice = input("Type 'y' to get another card, type 'n' to pass: ")
+        if not blackjack(player, computer):
+            while True:
+                choice = input("Type 'y' to get another card, type 'n' to pass: ").lower()
                 if choice == 'y':
-                    add_new_card(player)
-                    print(f"Your cards: {player['cards']}, current score: {player['score']}")
-                    check
+                    add_card(player)
+                    if player['score'] > 21:
+                        print(f"\n{player['name']} went over 21! {computer['name']} wins")
+                        break
                 else:
-                    while computer['score'] <= player['score'] and computer['score'] <= 21:
-                        add_new_card(computer)
-                    print(f"computer final cards: {computer['cards']}, current score: {computer['score']}")
-                    check_winner(player, computer)
+                    while computer['score'] <= player['score']:
+                        add_card(computer)
+                    if computer['score'] > 21:
+                        print(f"\n{computer['name']} went over 21! {player['name']} wins!")
+                    elif player['score'] == computer['score']:
+                        print("\nDraw")
+                    elif player['score'] > computer['score']:
+                        print("\nYou win!")
+                    else:
+                        print("\nYou loose!")
+                    break
+        final_cards(player, computer)
+        print()
     else:
+        print("Goodbye!")
         break
